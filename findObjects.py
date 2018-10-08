@@ -84,35 +84,34 @@ import copy
 from matplotlib import pyplot as plt
 from SolidObject import *
 
-problems = load_images()
-print(len(problems))
+def segment_objects(image):
+    #problems = load_images()
 
-image = np.array(problems[1])[0:50,0:60]
+    #image = np.array(problems[1])[0:50,0:60]
+    image = np.array(image)
+    #convert image to custom discrete colors
 
-objectGroups = []
-for color in [127,0]: #blue, black
-    colorImage = copy.copy(image)
-    colorImage[image!=color] = 255
-    colorImage[image==color] = 0
+    objectGroups = []
+    for color in [127,0]: #blue, black
+        colorImage = copy.copy(image)
+        colorImage[image!=color] = 255
+        colorImage[image==color] = 0
 
-    #display(Image.fromarray(image))
-    #display(Image.fromarray(colorImage))
-    objectGroups += [find_all_sub_objects(colorImage,0),]
+        #display(Image.fromarray(image))
+        #display(Image.fromarray(colorImage))
+        objectGroups += [find_all_sub_objects(colorImage,0),]
 
-for group in objectGroups:
-    for i,o in enumerate(group):
-        o = 1-o
-        im = Image.fromarray(o*255).convert('L')
-        bbox = im.getbbox()
-        coords = (bbox[0],bbox[1])
-        im = im.crop(bbox)
-        
-        group[i] = [np.array(im)/255,coords]
-        #display(im)
+    for group in objectGroups:
+        for i,o in enumerate(group):
+            o = 1-o
+            im = Image.fromarray(o*255).convert('L')
+            bbox = im.getbbox()
+            coords = (bbox[0],bbox[1])
+            im = im.crop(bbox)
+            
+            group[i] = [np.array(im)/255,coords]
+            #display(im)
 
-blueObjects = [SolidObject(x[0],x[1]) for x in objectGroups[0]]
-blackObjects = [SolidObject(x[0],x[1]) for x in objectGroups[1]]
-
-print(blueObjects[0].image.shape)
-
-Image.fromarray((1-blueObjects[0].image)*255).convert('RGB')
+    blueObjects = [SolidObject(x[0],x[1],isBlue=True) for x in objectGroups[0]]
+    blackObjects = [SolidObject(x[0],x[1]) for x in objectGroups[1]]
+    return blackObjects,blueObjects
