@@ -93,22 +93,22 @@ def blackMask(image):
 
 def blueMask(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    lower = np.array([200,50,50])
-    upper = np.array([240,255,255])
+    lower = np.array([110,50,50])
+    upper = np.array([130,255,255])
     shapeMask = cv2.inRange(hsv, lower, upper)
     return shapeMask
 
 def yellowMask(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    lower = np.array([20,100,100])
-    upper = np.array([30,255,255])
+    lower = np.array([20,50,50])
+    upper = np.array([40,255,255])
     shapeMask = cv2.inRange(hsv, lower, upper)
     return shapeMask
 
 def greenMask(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    lower = np.array([80,50,50])
-    upper = np.array([120,255,255])
+    lower = np.array([40,50,50])
+    upper = np.array([80,255,255])
     shapeMask = cv2.inRange(hsv, lower, upper)
     return shapeMask
 
@@ -120,7 +120,7 @@ def image_to_segimage(image):
 
 def segment_objects(image):
     #problems = load_images()
-
+    im = np.array(Image.fromarray(image).convert('HSV'))
     #image = np.array(problems[1])[0:50,0:60]
     im2 = np.array(image)
     #convert image to custom discrete colors
@@ -130,10 +130,11 @@ def segment_objects(image):
         #colorImage = copy.copy(image)
         #colorImage[image!=color] = 255
         #colorImage[image==color] = 0
-
+        #ci = 1-colorImage
+        #Image.fromarray(255-colorImage).show()
         #display(Image.fromarray(image))
         #display(Image.fromarray(colorImage))
-        objectGroups += [find_all_sub_objects(colorImage,0),]
+        objectGroups += [find_all_sub_objects(1-colorImage/255,0),]
 
     for group in objectGroups:
         for i,o in enumerate(group):
@@ -151,3 +152,17 @@ def segment_objects(image):
     g = [SolidObject(x[0],x[1]) for x in objectGroups[2]]
     y = [SolidObject(x[0],x[1]) for x in objectGroups[3]]
     return blackObjects,blueObjects,g,y
+
+
+def main():
+    image = cv2.imread("pivot_test.png")
+    segmentbl,segmentblu, segmentg, segmenty = segment_objects(image)
+    print(len(segmentbl),len(segmentblu),len(segmentg),len(segmenty))
+    imageToShow = segmentblu[0].image
+    Image.fromarray((1-imageToShow)*255).show()
+    #print(len(segmentbl), len(segmentblu), len(segmentg), len(segmenty))
+    
+
+
+
+main()
