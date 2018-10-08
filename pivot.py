@@ -12,11 +12,17 @@ def point_after_rotation(point, center, degrees):
     :return: rotates a point about center
     """
     angle = degrees * math.pi / 180
-    return ((point[1] - center[1]) * math.cos(angle) - (point[0] - center[0])* math.sin(angle),
+    return ((point[1] - center[1]) * math.cos(angle) - (point[0] - center[0]) * math.sin(angle),
             (point[1] - center[1]) * math.sin(angle) + (point[0] - center[0]) * math.cos(angle))
 
 
 def find_tilt_direction(obj, pivot, linked_objs):
+    """
+    :param obj: object to pivot
+    :param pivot:
+    :param linked_objs: objects linked by strings
+    :return:
+    """
     """
     pseudocode
     pivot_center = pivot.center
@@ -39,6 +45,7 @@ def find_tilt_direction(obj, pivot, linked_objs):
     """
     pass
 
+
 def pivot_object(object, pivot, linked_objects):
     """
     pseudocode
@@ -54,4 +61,8 @@ def pivot_object(object, pivot, linked_objects):
 
     return new_image
     """
+    pass
+
+
+if __name__ == "__main__":
     pass
