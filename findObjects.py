@@ -81,7 +81,6 @@ def find_all_sub_objects(matrix, val, color=0):
 
 from PIL import Image
 import copy
-from matplotlib import pyplot as plt
 from SolidObject import *
 import cv2
 
@@ -123,11 +122,11 @@ def segment_objects(image):
     #problems = load_images()
 
     #image = np.array(problems[1])[0:50,0:60]
-    image = np.array(image)
+    im2 = np.array(image)
     #convert image to custom discrete colors
 
     objectGroups = []
-    for color in image_to_segimage(image): #blue, black
+    for colorImage in image_to_segimage(image): #blue, black
         #colorImage = copy.copy(image)
         #colorImage[image!=color] = 255
         #colorImage[image==color] = 0
