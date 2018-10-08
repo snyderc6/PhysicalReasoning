@@ -79,17 +79,5 @@ def find_all_sub_objects(matrix, val, color=0):
         avail_loc = find_available(ob_matrix, val=val)
     return objects
 
-problems = load_images()
-print(len(problems))
 
-image = np.array(problems[1])
-print(image[20])
-#change X color to black in new image
-blue = 255
-blueImage = np.equal(np.ones(image.shape)*blue,image)*1
-
-print(blueImage[20])
-
-objects = find_all_sub_objects(blueImage,0)
-print(len(objects))
 #print(objects)
