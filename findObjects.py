@@ -83,6 +83,41 @@ from PIL import Image
 import copy
 from matplotlib import pyplot as plt
 from SolidObject import *
+import cv2
+
+
+def blackMask(image):
+    lower = np.array([0, 0, 0])
+    upper = np.array([15, 15, 15])
+    shapeMask = cv2.inRange(image, lower, upper)
+    return shapeMask
+
+def blueMask(image):
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    lower = np.array([200,50,50])
+    upper = np.array([240,255,255])
+    shapeMask = cv2.inRange(hsv, lower, upper)
+    return shapeMask
+
+def yellowMask(image):
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    lower = np.array([20,100,100])
+    upper = np.array([30,255,255])
+    shapeMask = cv2.inRange(hsv, lower, upper)
+    return shapeMask
+
+def greenMask(image):
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    lower = np.array([80,50,50])
+    upper = np.array([120,255,255])
+    shapeMask = cv2.inRange(hsv, lower, upper)
+    return shapeMask
+
+def image_to_segimage(image):
+
+    #todo: get pivots and ropes here too 
+    return blueMask(image), blackMask(image), yellowMask(image), greenMask(image)
+
 
 def segment_objects(image):
     #problems = load_images()
@@ -92,10 +127,10 @@ def segment_objects(image):
     #convert image to custom discrete colors
 
     objectGroups = []
-    for color in [127,0]: #blue, black
-        colorImage = copy.copy(image)
-        colorImage[image!=color] = 255
-        colorImage[image==color] = 0
+    for color in image_to_segimage(image): #blue, black
+        #colorImage = copy.copy(image)
+        #colorImage[image!=color] = 255
+        #colorImage[image==color] = 0
 
         #display(Image.fromarray(image))
         #display(Image.fromarray(colorImage))
@@ -114,4 +149,6 @@ def segment_objects(image):
 
     blueObjects = [SolidObject(x[0],x[1],isBlue=True) for x in objectGroups[0]]
     blackObjects = [SolidObject(x[0],x[1]) for x in objectGroups[1]]
-    return blackObjects,blueObjects
+    g = [SolidObject(x[0],x[1]) for x in objectGroups[2]]
+    y = [SolidObject(x[0],x[1]) for x in objectGroups[3]]
+    return blackObjects,blueObjects,g,y
