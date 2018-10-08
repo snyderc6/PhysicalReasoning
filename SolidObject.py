@@ -7,6 +7,7 @@ class SolidObject():
         self.image = array
         allpixels = np.transpose(array.nonzero())
         self.center = tuple(np.floor(np.mean(allpixels,axis=0)))
+        self.rotation = 0
         self.area = sum(sum(array))
         self.ropeIds = []
         self.ropeAttachPoints = []
