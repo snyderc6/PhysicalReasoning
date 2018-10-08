@@ -79,17 +79,40 @@ def find_all_sub_objects(matrix, val, color=0):
         avail_loc = find_available(ob_matrix, val=val)
     return objects
 
+from PIL import Image
+import copy
+from matplotlib import pyplot as plt
+from SolidObject import *
+
 problems = load_images()
 print(len(problems))
 
-image = np.array(problems[1])
-print(image[20])
-#change X color to black in new image
-blue = 255
-blueImage = np.equal(np.ones(image.shape)*blue,image)*1
+image = np.array(problems[1])[0:50,0:60]
 
-print(blueImage[20])
+objectGroups = []
+for color in [127,0]: #blue, black
+    colorImage = copy.copy(image)
+    colorImage[image!=color] = 255
+    colorImage[image==color] = 0
 
-objects = find_all_sub_objects(blueImage,0)
-print(len(objects))
-#print(objects)
+    #display(Image.fromarray(image))
+    #display(Image.fromarray(colorImage))
+    objectGroups += [find_all_sub_objects(colorImage,0),]
+
+for group in objectGroups:
+    for i,o in enumerate(group):
+        o = 1-o
+        im = Image.fromarray(o*255).convert('L')
+        bbox = im.getbbox()
+        coords = (bbox[0],bbox[1])
+        im = im.crop(bbox)
+        
+        group[i] = [np.array(im)/255,coords]
+        #display(im)
+
+blueObjects = [SolidObject(x[0],x[1]) for x in objectGroups[0]]
+blackObjects = [SolidObject(x[0],x[1]) for x in objectGroups[1]]
+
+print(blueObjects[0].image.shape)
+
+Image.fromarray((1-blueObjects[0].image)*255).convert('RGB')
