@@ -83,6 +83,7 @@ from PIL import Image
 import copy
 from SolidObject import *
 import cv2
+import math
 
 
 def blackMask(image):
@@ -149,20 +150,21 @@ def segment_objects(image):
 
     blueObjects = [SolidObject(x[0],x[1],isBlue=True) for x in objectGroups[0]]
     blackObjects = [SolidObject(x[0],x[1]) for x in objectGroups[1]]
-    g = [SolidObject(x[0],x[1]) for x in objectGroups[2]]
-    y = [SolidObject(x[0],x[1]) for x in objectGroups[3]]
+    y = [SolidObject(x[0],x[1]) for x in objectGroups[2]]
+    g = [SolidObject(x[0],x[1]) for x in objectGroups[3]]
     return blackObjects,blueObjects,g,y
 
+def point_distance(x,y,x2,y2):
+    return math.sqrt((x-x2)*(x-x2)+(y-y2)*(y-y2))
 
-def main():
-    image = cv2.imread("pivot_test.png")
-    segmentbl,segmentblu, segmentg, segmenty = segment_objects(image)
-    print(len(segmentbl),len(segmentblu),len(segmentg),len(segmenty))
-    imageToShow = segmentblu[0].image
-    Image.fromarray((1-imageToShow)*255).show()
-    #print(len(segmentbl), len(segmentblu), len(segmentg), len(segmenty))
-    
-
-
-
-main()
+def attach_yellows(blues,yellows):
+    for yellow in yellows:
+        closestdist = 10000
+        closest = None
+        ycoords = yellow.coords[0]+yellow.center[0],yellow.coords[1]+yellow.center[1]
+        for o in blues:
+            coords = o.coords[0]+o.center[0],o.coords[1]+o.center[1],
+            if point_distance(*coords,*ycoords) < closestdist:
+                closest = o
+        closest.pivot = ycoords[0]-(closest.coords[0]),ycoords[1]-(closest.coords[1])
+        print('attached pivot at',closest.pivot)
