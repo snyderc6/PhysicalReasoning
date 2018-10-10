@@ -95,20 +95,22 @@ def is_offset(o1_pixels, o2_pixels, offset_val):
 
 def get_orientation(object1, object2):
 	orientation = []
-	o1_pixels = object1.allpixels + object1.coords
-	o2_pixels = object2.allpixels + object2.coords
+	#o1_pixels = object1.allpixels + object1.coords
+	#o2_pixels = object2.allpixels + object2.coords
+	o1_pixels = object1.getWorldPixelCoordList()
+	o2_pixels = object2.getWorldPixelCoordList()
 
-	# is_underneath = is_offset(o1_pixels, o2_pixels, [0,-1])
-	# if(is_underneath):
-	# 	orientation.append("underneath")
+	is_underneath = is_offset(o1_pixels, o2_pixels, [0,-1])
+	if(is_underneath):
+		orientation.append("underneath")
 
-	# is_above = is_offset(o1_pixels, o2_pixels, [0,1])
-	# if(is_above):
-	# 	orientation.append("above")
+	is_above = is_offset(o1_pixels, o2_pixels, [0,1])
+	if(is_above):
+		orientation.append("above")
 
-	# is_right_of = is_offset(o1_pixels, o2_pixels, [-1,0])
-	# if(is_right_of):
-	# 	orientation.append("right_of")
+	is_right_of = is_offset(o1_pixels, o2_pixels, [-1,0])
+	if(is_right_of):
+		orientation.append("right_of")
 
 	is_left_of = is_offset(o1_pixels, o2_pixels, [1,0])
 	if(is_left_of):
@@ -122,7 +124,9 @@ def is_touching(object1, object2):
 		return True,orientation
 	return False,orientation
 
-#def is_supported(object, all_touching_objects):
+def is_supported(object, object2):
+	#stupid temp supported code 
+	return 'above' in get_orientation(object,object2)
 
 
 #def roll(blueObject,blackObject):

@@ -22,11 +22,11 @@ def move_shapes(black,blue):
 		if o.pivot != None:
 			#do stuff
 			i = 0
-		'''for o2 in black+blue:
-			if(is_touching(o,o2)) & (~is_supported(o,o2)): 
+		for o2 in black+blue:
+			if(is_touching(o,o2)[0]) & (~is_supported(o,o2)): 
 				#only roll o if touching o2 & not supported
 				#roll(o2)
-				i = 0'''
+				i = 0
 
 		o.coords = o.coords[0]+1*(vspd>0),o.coords[1]
 
@@ -36,6 +36,7 @@ def run_machine(black,blue):
 	i=0
 	while i<10:
 		i+=1
+		print('Step '+str(i))
 		black[0].rotation += 1
 		#check if anything changed since last frame
 		move_shapes(black,blue)
