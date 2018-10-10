@@ -5,8 +5,8 @@ class SolidObject():
     def __init__(self,array,coords,pivot=None,isBlue=False):
         self.coords = coords
         self.image = array
-        allpixels = np.transpose(array.nonzero())
-        self.center = tuple(np.floor(np.mean(allpixels,axis=0)))
+        self.allpixels = np.transpose(array.nonzero())
+        self.center = tuple(np.floor(np.mean(self.allpixels,axis=0)))
         self.rotation = 0
         self.area = sum(sum(array))
         self.ropeIds = []

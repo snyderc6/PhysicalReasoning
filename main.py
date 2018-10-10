@@ -1,4 +1,5 @@
 from findObjects import *
+from rolling import *
 import cv2
 from PIL import Image
 
@@ -28,8 +29,11 @@ def move_shapes(black,blue):
 			#do stuff
 			i = 0
 		for o2 in black+blue:
-			#do stuff
-			i = 0
+			if(is_touching(o,o2)) & (~is_supported(o,o2)): 
+				#only roll o if touching o2 & not supported
+				#roll(o2)
+				i = 0
+
 		o.coords = o.coords[0]+1*(vspd>0),o.coords[1]
 
 def run_machine(black,blue):
@@ -45,13 +49,22 @@ def run_machine(black,blue):
 
 
 def main():
-    image = cv2.imread("problems/pivot_test.png")
+    image = cv2.imread("problems/test.png")
     black,blue, green, yellow = segment_objects(image)
     print(len(black),len(blue),len(green),len(yellow))
     attach_yellows(blue,yellow)
-    movie = run_machine(black,blue)
-    for i,im in enumerate(movie):
-    	im.save('out/im-'+str(i)+'.png')
+    blueO = blue[0]
+    blackO = black[0]
+
+    touchingVal, orientationVal = is_touching(blueO, blackO)
+    print(touchingVal)
+    print(orientationVal)
+    im = make_image(black, blue)
+    im.show()
+
+    #movie = run_machine(black,blue)
+    #for i,im in enumerate(movie):
+    #	im.save('out/im-'+str(i)+'.png')
     #imageToShow = segmentblu[0].image
     #Image.fromarray((1-imageToShow)*255).show()
     #print(len(segmentbl), len(segmentblu), len(segmentg), len(segmenty))
