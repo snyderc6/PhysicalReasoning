@@ -142,7 +142,7 @@ def segment_objects(image):
             o = 1-o
             im = Image.fromarray(o*255).convert('L')
             bbox = im.getbbox()
-            coords = (bbox[0],bbox[1])
+            coords = (bbox[1],bbox[0])
             im = im.crop(bbox)
             
             group[i] = [np.array(im)/255,coords]
