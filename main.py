@@ -5,8 +5,8 @@ from pivot import *
 from PIL import Image
 import copy
 
-def make_image(black,blue):
-	im = np.ones((800,800,3))
+def make_image(black,blue,imageSize):
+	im = np.ones((40,40,3))
 	for o in black:
 		pixels = o.getWorldPixelCoordList()
 		for pixel in pixels:
@@ -67,9 +67,9 @@ def move_shapes(black,blue):
 				o.coords = [o.coords[0],o.coords[1]+1]
 	return objectMoved
 
-def run_machine(black,blue):
+def run_machine(black,blue,imSize):
 	someObjectsMoved = True
-	movieImages = [make_image(black,blue),]
+	movieImages = [make_image(black,blue,imSize),]
 	i=0
 	#while someObjectsMoved:
 	while i < 8:
@@ -78,13 +78,13 @@ def run_machine(black,blue):
 		#black[0].rotation += 1
 		#check if anything changed since last frame
 		someObjectsMoved = move_shapes(black,blue)
-		movieImages += [make_image(black,blue),]
+		movieImages += [make_image(black,blue,imSize),]
 	return movieImages
 
 def make_video(image1, images):
 	height, width, layers = np.asarray(images[0]).shape
 
-	video = cv2.VideoWriter("video.avi", -1, 1, (width,height))
+	video = cv2.VideoWriter("video.avi", -1, 15, (width,height))
 
 	for image in images:
   		video.write(np.asarray(image))
@@ -107,7 +107,7 @@ def main():
     #move_shapes(blue,black)
     # im = make_image(black, blue)
     # im.show()
-	movie = run_machine(black,blue)
+	movie = run_machine(black,blue,image.size)
 	for i,im in enumerate(movie):
 		im.save('out/im-'+str(i)+'.png')
 	make_video(image,movie)
