@@ -87,7 +87,9 @@ def pivot_object(object, pivot, linked_objects=[], touching_objs=[]):
     pivot_center = pivot
     cur_rotation = object.rotation
     new_rotation = cur_rotation + find_tilt_direction(object, pivot, linked_objects, touching_objs)
-
+    privot_moved = True
+    if new_rotation == cur_rotation:
+        pivot_moved = False
     new_image = base_image.rotate(
         new_rotation,
         center=pivot_center,
@@ -105,7 +107,7 @@ def pivot_object(object, pivot, linked_objects=[], touching_objs=[]):
     x1, y1 = coords.max(axis=0)
     cropped = new_arr[x0:x1+1, y0:y1+1]
 
-    return cropped, new_rotation
+    return cropped, new_rotation,pivot_moved
 
 
 if __name__ == "__main__":

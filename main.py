@@ -19,9 +19,12 @@ def make_image(black,blue):
 	return im
 
 def move_shapes(black,blue):
+	objectMoved = False
 	for o in blue:
 		if o.pivot != None:
-			new_image, new_rotation = pivot_object(o, o.pivot, [])
+			new_image, new_rotation, pivot_moved = pivot_object(o, o.pivot, [])
+			if pivot_moved == True:
+				objectMoved = True
 			o.image = new_image
 			o.rotation = new_rotation
 		touching_o = []
@@ -52,27 +55,42 @@ def move_shapes(black,blue):
 				i = 0
 			if 'down' in direction_to_move:
 				print('moving down')
+				objectMoved = True
 				o.coords = [o.coords[0]+1,o.coords[1]]
 			if 'left_of' in direction_to_move:
 				print('moving left')
+				objectMoved = True
 				o.coords = [o.coords[0],o.coords[1]-1]
 			if 'right_of' in direction_to_move:	
 				print('moving right')
+				objectMoved = True
 				o.coords = [o.coords[0],o.coords[1]+1]
-
+	return objectMoved
 
 def run_machine(black,blue):
+	someObjectsMoved = True
 	movieImages = [make_image(black,blue),]
-	#im.show()
 	i=0
-	while i<15:
+	#while someObjectsMoved:
+	while i < 15:
 		i+=1
 		print('Step '+str(i))
 		#black[0].rotation += 1
 		#check if anything changed since last frame
-		move_shapes(black,blue)
+		someObjectsMoved = move_shapes(black,blue)
 		movieImages += [make_image(black,blue),]
 	return movieImages
+
+def make_video(image1, images):
+	height, width, layers = np.asarray(images[0]).shape
+
+	video = cv2.VideoWriter("video.avi", -1, 1, (width,height))
+
+	for image in images:
+  		video.write(np.asarray(image))
+
+	cv2.destroyAllWindows()
+	video.release()
 
 
 def main():
@@ -92,6 +110,7 @@ def main():
     movie = run_machine(black,blue)
     for i,im in enumerate(movie):
     	im.save('out/im-'+str(i)+'.png')
+    make_video(image,movie)
     #imageToShow = segmentblu[0].image
     #Image.fromarray((1-imageToShow)*255).show()
     #print(len(segmentbl), len(segmentblu), len(segmentg), len(segmenty))
