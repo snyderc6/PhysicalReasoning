@@ -6,15 +6,17 @@ from PIL import Image
 import copy
 
 def make_image(black,blue,imageSize):
-	im = np.ones((40,40,3))
+	im = np.ones(imageSize)
 	for o in black:
 		pixels = o.getWorldPixelCoordList()
 		for pixel in pixels:
-			im[pixel[0]][pixel[1]] = [0,0,0]
+			if -1 < pixel[0] < imageSize[0] and -1 < pixel[1] < imageSize[1]:
+				im[pixel[0]][pixel[1]] = [0,0,0]
 	for o in blue:
 		pixels = o.getWorldPixelCoordList()
 		for pixel in pixels:
-			im[pixel[0]][pixel[1]] = [0,0,1]
+			if -1 < pixel[0] < imageSize[0] and -1 < pixel[1] < imageSize[1]:
+				im[pixel[0]][pixel[1]] = [0,0,1]
 	im = Image.fromarray(im.astype('uint8')*255)
 	return im
 
@@ -25,7 +27,7 @@ def move_shapes(black,blue):
 			new_image, new_rotation = pivot_object(o, o.pivot, [])
 			# if pivot_moved == True:
 			# 	objectMoved = True
-			o.image = new_image
+			#o.image = new_image
 			o.rotation = new_rotation
 
 		touching_o = []
@@ -61,11 +63,11 @@ def move_shapes(black,blue):
 			if 'left_of' in direction_to_move:
 				print('moving left')
 				objectMoved = True
-				o.coords = [o.coords[0],o.coords[1]-1]
+				o.coords = [o.coords[0]-1,o.coords[1]-1]
 			if 'right_of' in direction_to_move:	
 				print('moving right')
 				objectMoved = True
-				o.coords = [o.coords[0],o.coords[1]+1]
+				o.coords = [o.coords[0]-1,o.coords[1]+1]
 	return objectMoved
 
 def run_machine(black,blue,imSize):
@@ -73,7 +75,7 @@ def run_machine(black,blue,imSize):
 	movieImages = [make_image(black,blue,imSize),]
 	i=0
 	#while someObjectsMoved:
-	while i < 8:
+	while i < 20:
 		i+=1
 		print('Step '+str(i))
 		#black[0].rotation += 1
@@ -96,6 +98,7 @@ def make_video(image1, images):
 
 def main():
 	image = cv2.imread("problems/6-1-small.png")
+	size = np.array(image).shape
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)
 	print(len(black),len(blue),len(green),len(yellow))
@@ -108,7 +111,7 @@ def main():
     #move_shapes(blue,black)
     # im = make_image(black, blue)
     # im.show()
-	movie = run_machine(black,blue,image.size)
+	movie = run_machine(black,blue,size)
 	for i,im in enumerate(movie):
 		im.save('out/im-'+str(i)+'.png')
 	make_video(image,movie)
