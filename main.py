@@ -35,6 +35,7 @@ def move_shapes(black,blue):
 			touching,direction = is_touching(o,o2)
 			if(touching & ("above" in direction)): 
 				direction.remove("above")
+				direction.append("down")
 				touching_o.append([o2,direction])
 		for support in touching_o:
 			print(support)
@@ -53,11 +54,11 @@ def move_shapes(black,blue):
 				print('moving down')
 				o.coords = [o.coords[0]+1,o.coords[1]]
 			if 'left_of' in direction_to_move:
-				print('moving right')
-				o.coords = [o.coords[0],o.coords[1]+1]
-			if 'right_of' in direction_to_move:	
 				print('moving left')
 				o.coords = [o.coords[0],o.coords[1]-1]
+			if 'right_of' in direction_to_move:	
+				print('moving right')
+				o.coords = [o.coords[0],o.coords[1]+1]
 
 
 def run_machine(black,blue):
