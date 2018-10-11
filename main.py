@@ -6,7 +6,7 @@ from PIL import Image
 import copy
 
 def make_image(black,blue):
-	im = np.ones((100,100,3))
+	im = np.ones((800,800,3))
 	for o in black:
 		pixels = o.getWorldPixelCoordList()
 		for pixel in pixels:
@@ -22,9 +22,9 @@ def move_shapes(black,blue):
 	objectMoved = False
 	for o in blue:
 		if o.pivot != None:
-			new_image, new_rotation, pivot_moved = pivot_object(o, o.pivot, [])
-			if pivot_moved == True:
-				objectMoved = True
+			new_image, new_rotation = pivot_object(o, o.pivot, [])
+			# if pivot_moved == True:
+			# 	objectMoved = True
 			o.image = new_image
 			o.rotation = new_rotation
 		touching_o = []
@@ -72,7 +72,7 @@ def run_machine(black,blue):
 	movieImages = [make_image(black,blue),]
 	i=0
 	#while someObjectsMoved:
-	while i < 50:
+	while i < 8:
 		i+=1
 		print('Step '+str(i))
 		#black[0].rotation += 1
@@ -94,11 +94,11 @@ def make_video(image1, images):
 
 
 def main():
-    image = cv2.imread("problems/6-1-no-mouse.png")
-    black,blue, green, yellow = segment_objects(image)
-    #print(blue)
-    print(len(black),len(blue),len(green),len(yellow))
-    attach_yellows(blue,yellow)
+	image = cv2.imread("problems/6-1-no-mouse.png")
+	black,blue, green, yellow = segment_objects(image)
+	#print(blue)
+	print(len(black),len(blue),len(green),len(yellow))
+	attach_yellows(blue,yellow)
     # blueO = blue[0]
     # blackO = black[0]
     # touchingVal, orientationVal = is_touching(blueO, blackO)
@@ -106,11 +106,10 @@ def main():
     #move_shapes(blue,black)
     # im = make_image(black, blue)
     # im.show()
-
-    movie = run_machine(black,blue)
-    for i,im in enumerate(movie):
-    	im.save('out/im-'+str(i)+'.png')
-    make_video(image,movie)
+	movie = run_machine(black,blue)
+	for i,im in enumerate(movie):
+		im.save('out/im-'+str(i)+'.png')
+	make_video(image,movie)
     #imageToShow = segmentblu[0].image
     #Image.fromarray((1-imageToShow)*255).show()
     #print(len(segmentbl), len(segmentblu), len(segmentg), len(segmenty))
