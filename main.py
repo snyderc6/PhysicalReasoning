@@ -1,10 +1,12 @@
 from findObjects import *
 from rolling import *
 import cv2
+from pivot import *
 from PIL import Image
+import copy
 
 def make_image(black,blue):
-	im = np.ones((800,800,3))
+	im = np.ones((100,100,3))
 	for o in black:
 		pixels = o.getWorldPixelCoordList()
 		for pixel in pixels:
@@ -18,15 +20,18 @@ def make_image(black,blue):
 
 def move_shapes(black,blue):
 	for o in blue:
-		vspd = o.area
 		if o.pivot != None:
-			#do stuff
-			i = 0
+			new_image, new_rotation = pivot_object(o, o.pivot, [])
+			o.image = new_image
+			o.rotation = new_rotation
 		touching_o = []
 		supported_underneath = False
 		direction_to_move = ["down"]
-		blue.remove(o)#remove o from list
-		for o2 in black+blue:
+		#blue.remove(o)#remove o from list
+		print(len(black+blue))
+		obj_list = copy.copy(black+blue)
+		obj_list.remove(o)
+		for o2 in obj_list:
 			touching,direction = is_touching(o,o2)
 
 			if(touching & ("above" in direction)): 
@@ -41,27 +46,29 @@ def move_shapes(black,blue):
 				direction_to_move = support[1]
 		print("supported",supported_underneath)
 		print("dir", direction_to_move)
-		if(~supported_underneath):
+		if not supported_underneath:
 			if(o.ropeIds != None):
 				#check if supported by string do something
 				i = 0
-			else:
-				if direction_to_move[0] == "down":
-					o.coords = o.coords[0]+1*(vspd>0),o.coords[1]
-				elif direction_to_move[0] == "left_of":
-					o.coords = o.coords[0]+1*(vspd>0),o.coords[1]+1*(vspd>0)
-				else:	
-					o.coords = o.coords[0]+1*(vspd>0),o.coords[1]-1*(vspd>0)
+			if 'down' in direction_to_move:
+				print('moving down')
+				o.coords = o.coords[0]+1,o.coords[1]
+			if 'left_of' in direction_to_move:
+				print('moving right')
+				o.coords = o.coords[0],o.coords[1]+1
+			if 'right_of' in direction_to_move:	
+				print('moving left')
+				o.coords = o.coords[0],o.coords[1]-1
 
 
 def run_machine(black,blue):
 	movieImages = [make_image(black,blue),]
 	#im.show()
 	i=0
-	while i<10:
+	while i<15:
 		i+=1
 		print('Step '+str(i))
-		black[0].rotation += 1
+		#black[0].rotation += 1
 		#check if anything changed since last frame
 		move_shapes(black,blue)
 		movieImages += [make_image(black,blue),]
@@ -69,22 +76,22 @@ def run_machine(black,blue):
 
 
 def main():
-    image = cv2.imread("problems/rolling_test.png")
+    image = cv2.imread("problems/small-test.png")
     black,blue, green, yellow = segment_objects(image)
-    print(blue)
+    #print(blue)
     print(len(black),len(blue),len(green),len(yellow))
     attach_yellows(blue,yellow)
-    blueO = blue[0]
-    blackO = black[0]
+    #blueO = blue[0]
+    #blackO = black[0]
     # touchingVal, orientationVal = is_touching(blueO, blackO)
     # #print(orientationVal)
-    move_shapes(blue,black)
+    #move_shapes(blue,black)
     # im = make_image(black, blue)
     # im.show()
 
-    # movie = run_machine(black,blue)
-    # for i,im in enumerate(movie):
-    # 	im.save('out/im-'+str(i)+'.png')
+    movie = run_machine(black,blue)
+    for i,im in enumerate(movie):
+    	im.save('out/im-'+str(i)+'.png')
     #imageToShow = segmentblu[0].image
     #Image.fromarray((1-imageToShow)*255).show()
     #print(len(segmentbl), len(segmentblu), len(segmentg), len(segmenty))
