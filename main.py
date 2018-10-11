@@ -27,6 +27,7 @@ def move_shapes(black,blue):
 			# 	objectMoved = True
 			o.image = new_image
 			o.rotation = new_rotation
+
 		touching_o = []
 		supported_underneath = False
 		direction_to_move = ["down"]
@@ -53,7 +54,7 @@ def move_shapes(black,blue):
 			if(o.ropeIds != None):
 				#check if supported by string do something
 				i = 0
-			if 'down' in direction_to_move:
+			if 'down' in direction_to_move and not o.pivot:
 				print('moving down')
 				objectMoved = True
 				o.coords = [o.coords[0]+1,o.coords[1]]
