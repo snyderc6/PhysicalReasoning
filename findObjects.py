@@ -206,6 +206,6 @@ def attach_greens(blues,greens):
                         closestdist = point_distance(*coords,*ycoords)
             prev = closest
             closest.ropeAttachPoints += [ycoords[0]-(closest.coords[0]),ycoords[1]-(closest.coords[1]),]
-            closest.ropeIds += [self,]
-            self.ropeIds += [closest,]
+            closest.ropeIds += [green,]
+            green.ropeIds += [closest,]
             print('attached rope to',closest,'at',closest.ropeAttachPoints)

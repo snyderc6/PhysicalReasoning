@@ -94,11 +94,12 @@ def make_video(image1, images):
 
 
 def main():
-	image = cv2.imread("problems/6-1-no-mouse.png")
+	image = cv2.imread("problems/6-1-small.png")
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)
 	print(len(black),len(blue),len(green),len(yellow))
 	attach_yellows(blue,yellow)
+	attach_greens(blue,green)
     # blueO = blue[0]
     # blackO = black[0]
     # touchingVal, orientationVal = is_touching(blueO, blackO)
