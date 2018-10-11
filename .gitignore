@@ -1,7 +1,6 @@
 
 *.pyc
 *.pyc
-**/problems/*
 **/out/*
 **/__pycache__/*
 **/ipynb_checkpoints/*
