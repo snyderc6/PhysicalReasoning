@@ -166,5 +166,46 @@ def attach_yellows(blues,yellows):
             coords = o.coords[0]+o.center[0],o.coords[1]+o.center[1],
             if point_distance(*coords,*ycoords) < closestdist:
                 closest = o
+                closestdist = point_distance(*coords,*ycoords)
         closest.pivot = ycoords[0]-(closest.coords[0]),ycoords[1]-(closest.coords[1])
         print('attached pivot at',closest.pivot)
+
+def attach_greens(blues,greens):
+    for green in greens:
+        furthest_point1 = None
+        fDist = 0
+        for point in green.allpixels:
+            dist = point_distance(*green.center,*point)
+            if dist > fDist:
+                fDist = dist
+                furthest_point1 = point
+
+        furthest_point2 = None
+        fDist = 0
+        for point in green.allpixels:
+            dist = point_distance(*furthest_point1,*point)
+            if dist > fDist:
+                fDist = dist
+                furthest_point2 = point
+
+        print('green: ',furthest_point1,furthest_point2,green.center)
+
+        prev = None
+        for p in [furthest_point1,furthest_point2]:
+            closestdist = 10000
+            closest = None
+            ycoords = green.coords[0]+p[0],green.coords[1]+p[1]
+            lst = copy.copy(blues)
+            if prev in lst:
+                lst.remove(prev)
+            for o in lst:
+                clist = o.getWorldPixelCoordList()
+                for coords in clist:
+                    if point_distance(*coords,*ycoords) < closestdist:
+                        closest = o
+                        closestdist = point_distance(*coords,*ycoords)
+            prev = closest
+            closest.ropeAttachPoints += [ycoords[0]-(closest.coords[0]),ycoords[1]-(closest.coords[1]),]
+            closest.ropeIds += [self,]
+            self.ropeIds += [closest,]
+            print('attached rope to',closest,'at',closest.ropeAttachPoints)
