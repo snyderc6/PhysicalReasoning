@@ -6,6 +6,7 @@ class SolidObject():
     def __init__(self,array,coords,pivot=None,isBlue=False):
         self.coords = coords
         self.image = array
+        self.base_image = array
         self.allpixels = np.transpose(array.nonzero())
         self.center = tuple(np.floor(np.mean(self.allpixels,axis=0)))
         self.rotation = 0
