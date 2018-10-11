@@ -50,11 +50,11 @@ def move_shapes(black,blue):
 				direction_to_move = support[1]
 		print("supported",supported_underneath)
 		print("dir", direction_to_move)
-		if not supported_underneath:
+		if not supported_underneath and not o.pivot:
 			if(o.ropeIds != None):
 				#check if supported by string do something
 				i = 0
-			if 'down' in direction_to_move and not o.pivot:
+			if 'down' in direction_to_move:
 				print('moving down')
 				objectMoved = True
 				o.coords = [o.coords[0]+1,o.coords[1]]
