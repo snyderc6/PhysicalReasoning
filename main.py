@@ -72,7 +72,7 @@ def run_machine(black,blue):
 	movieImages = [make_image(black,blue),]
 	i=0
 	#while someObjectsMoved:
-	while i < 15:
+	while i < 50:
 		i+=1
 		print('Step '+str(i))
 		#black[0].rotation += 1
@@ -94,15 +94,15 @@ def make_video(image1, images):
 
 
 def main():
-    image = cv2.imread("problems/small-test.png")
+    image = cv2.imread("problems/6-1-no-mouse.png")
     black,blue, green, yellow = segment_objects(image)
     #print(blue)
     print(len(black),len(blue),len(green),len(yellow))
     attach_yellows(blue,yellow)
-    blueO = blue[0]
-    blackO = black[0]
-    touchingVal, orientationVal = is_touching(blueO, blackO)
-    print(orientationVal)
+    # blueO = blue[0]
+    # blackO = black[0]
+    # touchingVal, orientationVal = is_touching(blueO, blackO)
+    # print(orientationVal)
     #move_shapes(blue,black)
     # im = make_image(black, blue)
     # im.show()
