@@ -33,7 +33,6 @@ def move_shapes(black,blue):
 		obj_list.remove(o)
 		for o2 in obj_list:
 			touching,direction = is_touching(o,o2)
-
 			if(touching & ("above" in direction)): 
 				direction.remove("above")
 				touching_o.append([o2,direction])
@@ -52,13 +51,13 @@ def move_shapes(black,blue):
 				i = 0
 			if 'down' in direction_to_move:
 				print('moving down')
-				o.coords = o.coords[0]+1,o.coords[1]
+				o.coords = [o.coords[0]+1,o.coords[1]]
 			if 'left_of' in direction_to_move:
 				print('moving right')
-				o.coords = o.coords[0],o.coords[1]+1
+				o.coords = [o.coords[0],o.coords[1]+1]
 			if 'right_of' in direction_to_move:	
 				print('moving left')
-				o.coords = o.coords[0],o.coords[1]-1
+				o.coords = [o.coords[0],o.coords[1]-1]
 
 
 def run_machine(black,blue):
@@ -81,10 +80,10 @@ def main():
     #print(blue)
     print(len(black),len(blue),len(green),len(yellow))
     attach_yellows(blue,yellow)
-    #blueO = blue[0]
-    #blackO = black[0]
-    # touchingVal, orientationVal = is_touching(blueO, blackO)
-    # #print(orientationVal)
+    blueO = blue[0]
+    blackO = black[0]
+    touchingVal, orientationVal = is_touching(blueO, blackO)
+    print(orientationVal)
     #move_shapes(blue,black)
     # im = make_image(black, blue)
     # im.show()

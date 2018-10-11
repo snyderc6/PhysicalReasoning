@@ -13,6 +13,7 @@ def is_offset(o1_pixels, o2_pixels, offset_val):
 	offset_pixels = o1_pixels + offset_val
 	shared_pixels = np.array([x for x in set(tuple(x) for x in offset_pixels) & set(tuple(x) for x in o2_pixels)])
 	if(len(shared_pixels) > 0):
+		print(len(shared_pixels))
 		return True
 	return False
 
@@ -21,19 +22,19 @@ def get_orientation(object1, object2):
 	o1_pixels = object1.getWorldPixelCoordList()
 	o2_pixels = object2.getWorldPixelCoordList()
 
-	is_underneath = is_offset(o1_pixels, o2_pixels, [0,-1])
+	is_underneath = is_offset(o1_pixels, o2_pixels, [0,1])
 	if(is_underneath): #o1 is underneath o2
 		orientation.append("underneath")
 
-	is_above = is_offset(o1_pixels, o2_pixels, [0,1])
+	is_above = is_offset(o1_pixels, o2_pixels, [0,-1])
 	if(is_above): #o1 is above o2
 		orientation.append("above")
 
-	is_right_of = is_offset(o1_pixels, o2_pixels, [-1,0])
+	is_right_of = is_offset(o1_pixels, o2_pixels, [1,0])
 	if(is_right_of): #o1 is to the right of o2
 		orientation.append("right_of")
 
-	is_left_of = is_offset(o1_pixels, o2_pixels, [1,0])
+	is_left_of = is_offset(o1_pixels, o2_pixels, [-1,0])
 	if(is_left_of): #o1 is to the left of o2
 		orientation.append("left_of")
 	
@@ -47,9 +48,11 @@ def is_touching(object1, object2):
 
 def is_supported(obj, supportObj):
 	support_obj_pixels = supportObj.getWorldPixelCoordList()
-	offset_pixels = obj.getWorldPixelCoordList()+[0,1]
+	offset_pixels = obj.getWorldPixelCoordList()+[0,-1]
 	shared_pixels = np.array([x for x in set(tuple(x) for x in offset_pixels) & set(tuple(x) for x in support_obj_pixels)]) 
 	obj_center = obj.center
+	print(obj_center)
+	print(shared_pixels)
 	if(obj_center[1] in shared_pixels[:,1]):
 		return True
 	return False
