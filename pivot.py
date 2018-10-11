@@ -1,5 +1,5 @@
 import PIL
-from SolidObject_pivot import *
+from SolidObject import *
 import math
 import numpy as np
 
@@ -17,7 +17,7 @@ def point_after_rotation(point, center, degrees):
             (point[1] - center[1]) * math.sin(angle) + (point[0] - center[0]) * math.cos(angle))
 
 
-def find_tilt_direction(obj, pivot, linked_objs=[]):
+def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
     """
     uses SolidObject class
     :param obj: object to pivot
@@ -51,18 +51,28 @@ def find_tilt_direction(obj, pivot, linked_objs=[]):
     left_image = obj.image[0:obj_dim[0]][0:left_right_seperation]
     right_image = obj.image[0:obj_dim[0]][left_right_seperation:obj_dim[0]]
 
-    """
+    left_area = np.count_nonzero(left_image)
+    right_area = np.count_nonzero(right_image)
+
     left_objs = []
     right_objs = []
+    """
     for o in linked_objs:
         if o.link_pos.x < pivot_center:
             left_objs.append(obj)
         elif o.link_pos.x > pivot_center:
             right_objs.append(obj)
     """
-    left_area = np.count_nonzero(left_image)
-    right_area = np.count_nonzero(right_image)
-    print(left_area, right_area)
+    for o in touching_objs:
+        if o.coords+o.center < left_right_seperation:
+            left_objs.append(o)
+        elif o.coords+o.center > left_right_seperation:
+            right_objs.append(o)
+
+    left_area += sum([o.area for o in left_objs])
+    right_area += sum([o.area for o in right_objs])
+
+    # print(left_area, right_area)
     if left_area > right_area:
         return 1
     elif left_area < right_area:
@@ -71,26 +81,12 @@ def find_tilt_direction(obj, pivot, linked_objs=[]):
         return 0
 
 
-def pivot_object(object, pivot, linked_objects=[]):
-    """
-    pseudocode
-
-    pivot_center = pivot.center
-    cur_rotation = obj.rotation
-
-    new_image = object.base_image.rotate(
-        cur_rotation+find_tilt_direction(object, pivot, linked_objects),
-        center=pivot_center
-    )
-
-
-    return new_image
-    """
+def pivot_object(object, pivot, linked_objects=[], touching_objs=[]):
     base_image = PIL.Image.fromarray(object.base_image)
     # print(object.image)
     pivot_center = pivot
     cur_rotation = object.rotation
-    new_rotation = cur_rotation + find_tilt_direction(object, pivot, linked_objects)
+    new_rotation = cur_rotation + find_tilt_direction(object, pivot, linked_objects, touching_objs)
 
     new_image = base_image.rotate(
         new_rotation,

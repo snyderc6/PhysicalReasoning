@@ -1,6 +1,7 @@
 from findObjects import *
 from rolling import *
 import cv2
+from pivot import *
 from PIL import Image
 
 def make_image(black,blue):
@@ -19,9 +20,10 @@ def make_image(black,blue):
 def move_shapes(black,blue):
 	for o in blue:
 		vspd = o.area
-		if o.pivot != None:
-			#do stuff
-			i = 0
+		if o.pivot is not None:
+			new_image, new_rotation = pivot_object(o, o.pivot, [])
+			o.image = new_image
+			o.rotation = new_rotation
 		touching_o = []
 		supported_underneath = False
 		direction_to_move = ["down"]
