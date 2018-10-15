@@ -23,15 +23,6 @@ def make_image(black,blue,imageSize):
 def move_shapes(black,blue):
 	objectMoved = False
 	for o in blue:
-		if o.pivot != None:
-			link_objs = []
-			touch_objs = []
-			new_coords, new_pivot, new_rotation = pivot_object(o, o.pivot, link_objs, touch_objs)
-			# not actually right yet
-			# o.coords = new_coords
-			# o.pivot = new_pivot
-			o.rotation = new_rotation
-
 		touching_o = []
 		supported_underneath = False
 		direction_to_move = ["down"]
@@ -70,6 +61,13 @@ def move_shapes(black,blue):
 				print('moving right')
 				objectMoved = True
 				o.coords = [o.coords[0]-1,o.coords[1]+1]
+		if o.pivot:
+			link_objs = []
+			new_coords, new_pivot, new_rotation = pivot_object(o, o.pivot, link_objs, touching_o)
+			# not actually right yet
+			# o.coords = new_coords
+			# o.pivot = new_pivot
+			o.rotation = new_rotation
 	return objectMoved
 
 def run_machine(black,blue,imSize):
@@ -77,7 +75,7 @@ def run_machine(black,blue,imSize):
 	movieImages = [make_image(black,blue,imSize),]
 	i=0
 	#while someObjectsMoved:
-	while i < 20:
+	while i < 50:
 		i+=1
 		print('Step '+str(i))
 		#black[0].rotation += 1
@@ -99,7 +97,7 @@ def make_video(image1, images):
 
 
 def main():
-	image = cv2.imread("problems/6-1-small.png")
+	image = cv2.imread("problems/test.png")
 	size = np.array(image).shape
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)

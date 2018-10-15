@@ -45,7 +45,7 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
     left_area = np.count_nonzero(left_image)
     right_area = np.count_nonzero(right_image)
 
-    left_right_seperation = obj.coords[1] + pivot[1]
+    left_right_seperation = obj.coords[0] + pivot[0]
     left_objs = []
     right_objs = []
     """
@@ -57,9 +57,11 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
             right_objs.append(obj)
     """
     for o in touching_objs:
-        if o.coords+o.center < left_right_seperation:
+        o = o[0] #get the object, not the direction touching
+        check = o.coords+np.asarray(o.center)
+        if check[0] < left_right_seperation:
             left_objs.append(o)
-        elif o.coords+o.center > left_right_seperation:
+        elif check[0] > left_right_seperation:
             right_objs.append(o)
 
     left_area += sum([o.area for o in left_objs])
@@ -69,9 +71,10 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
     print("shapes:", obj_dim, left_image.shape, right_image.shape)
     print("TLR:", total_area, left_area, right_area)
 
-    if left_area > right_area:
+    buffer_val = 150
+    if left_area > right_area + buffer_val:
         return 1
-    elif left_area < right_area:
+    elif left_area + buffer_val < right_area:
         return -1
     else:
         return 0
