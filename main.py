@@ -20,8 +20,24 @@ def make_image(black,blue,imageSize):
 	im = Image.fromarray(im.astype('uint8')*255)
 	return im
 
-def move_shapes(black,blue):
+def roll(o, direction_to_move):
 	objectMoved = False
+	if 'down' in direction_to_move:
+		print('moving down')
+		objectMoved = True
+		o.coords = [o.coords[0]+1,o.coords[1]]
+	if 'left_of' in direction_to_move:
+		print('moving left')
+		objectMoved = True
+		o.coords = [o.coords[0]-1,o.coords[1]-1]
+	if 'right_of' in direction_to_move:	
+		print('moving right')
+		objectMoved = True
+		o.coords = [o.coords[0]-1,o.coords[1]+1]
+	return objectMoved
+
+def move_shapes(black,blue):
+	objectsMoved = []
 	for o in blue:
 		touching_o = []
 		supported_underneath = False
@@ -46,24 +62,14 @@ def move_shapes(black,blue):
 		print("supported",supported_underneath)
 		print("dir", direction_to_move)
 		if not supported_underneath and not o.pivot:
-			if(o.ropeIds != None):
-				#check if supported by string do something
-				i = 0
-			if 'down' in direction_to_move:
-				print('moving down')
-				objectMoved = True
-				o.coords = [o.coords[0]+1,o.coords[1]]
-			if 'left_of' in direction_to_move:
-				print('moving left')
-				objectMoved = True
-				o.coords = [o.coords[0]-1,o.coords[1]-1]
-			if 'right_of' in direction_to_move:	
-				print('moving right')
-				objectMoved = True
-				o.coords = [o.coords[0]-1,o.coords[1]+1]
+			objectMoved = roll(o, direction_to_move)
+			if objectMoved:
+				objectsMoved.append(o)
 		if o.pivot:
-			link_objs = []
-			new_coords, new_pivot, new_rotation = pivot_object(o, o.pivot, link_objs, touching_o)
+			non_supported_link_objs = []
+			new_coords, new_pivot, new_rotation, objectPivoted = pivot_object(o, o.pivot, non_supported_link_objs, touching_o)
+			if(objectPivoted):
+				objectsMoved.append(o)
 			# not actually right yet
 			# o.coords = new_coords
 			# o.pivot = new_pivot
@@ -75,7 +81,7 @@ def run_machine(black,blue,imSize):
 	movieImages = [make_image(black,blue,imSize),]
 	i=0
 	#while someObjectsMoved:
-	while i < 50:
+	while i < 20:
 		i+=1
 		print('Step '+str(i))
 		#black[0].rotation += 1

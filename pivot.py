@@ -45,7 +45,7 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
     left_area = np.count_nonzero(left_image)
     right_area = np.count_nonzero(right_image)
 
-    left_right_seperation = obj.coords[0] + pivot[0]
+    left_right_seperation = obj.coords[1] + pivot[1]
     left_objs = []
     right_objs = []
     """
@@ -59,9 +59,9 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
     for o in touching_objs:
         o = o[0] #get the object, not the direction touching
         check = o.coords+np.asarray(o.center)
-        if check[0] < left_right_seperation:
+        if check[1] < left_right_seperation:
             left_objs.append(o)
-        elif check[0] > left_right_seperation:
+        elif check[1] > left_right_seperation:
             right_objs.append(o)
 
     left_area += sum([o.area for o in left_objs])
@@ -84,12 +84,15 @@ def pivot_object(object, pivot, linked_objects=[], touching_objs=[]):
     pivot_center = pivot
     cur_rotation = object.rotation
     new_rotation = cur_rotation + find_tilt_direction(object, pivot, linked_objects, touching_objs)
-
+    if(new_rotation != cur_rotation):
+        objectMoved = False
+    else:
+        objectMoved = True
     # doesn't actually work
     new_coords = point_after_rotation((0, 0), pivot, new_rotation)
     new_pivot = point_after_rotation(pivot, pivot, new_rotation)
 
-    return new_coords, new_pivot, new_rotation
+    return new_coords, new_pivot, new_rotation, objectMoved
 
 
 if __name__ == "__main__":
