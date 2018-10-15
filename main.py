@@ -24,10 +24,12 @@ def move_shapes(black,blue):
 	objectMoved = False
 	for o in blue:
 		if o.pivot != None:
-			new_image, new_rotation = pivot_object(o, o.pivot, [])
-			# if pivot_moved == True:
-			# 	objectMoved = True
-			#o.image = new_image
+			link_objs = []
+			touch_objs = []
+			new_coords, new_pivot, new_rotation = pivot_object(o, o.pivot, link_objs, touch_objs)
+			# not actually right yet
+			# o.coords = new_coords
+			# o.pivot = new_pivot
 			o.rotation = new_rotation
 
 		touching_o = []

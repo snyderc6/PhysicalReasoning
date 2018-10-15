@@ -25,38 +25,31 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
     :param linked_objs: objects linked by strings
     :return:
     """
-    """
-    pseudocode
-    pivot_center = pivot.center
-    left = obj[left:pivot_center]
-    right = obj[pivot_center:right]
-    left_objs = []
-    right_objs = []
-    for o in linked_objs:
-        if o.link_pos.x < pivot_center:
-            left_objs.append(obj)
-        elif o.link_pos.x > pivot_center:
-            right_objs.append(obj)
+    base_image = PIL.Image.fromarray(obj.base_image)
+    pivot_center = pivot
+    cur_rotation = obj.rotation
+    new_image = base_image.rotate(
+        cur_rotation,
+        center=pivot_center,
+        expand=True
+    )
+    new_arr = np.array(new_image)
+    new_arr[np.nonzero(new_arr)] = 1
 
-    if left_area > right_area:
-        return 1
-    elif left_area < right_area:
-        return -1
-    else:
-        return 0
-    """
-    # pivot_center = (obj.coords[0] + pivot[0], obj.coords[1] + pivot[1])
-    obj_dim = obj.image.shape
-    left_right_seperation = obj.coords[1] - int(round(pivot[1]))
-    left_image = obj.image[0:obj_dim[0]][0:left_right_seperation]
-    right_image = obj.image[0:obj_dim[0]][left_right_seperation:obj_dim[0]]
+    obj_dim = new_arr.shape
+    pivot_col = int(round(pivot[1]))
+    left_image = new_arr[0:obj_dim[0], 0:pivot_col]
+    right_image = new_arr[0:obj_dim[0], pivot_col:obj_dim[1]]
 
+    total_area = np.count_nonzero(new_arr)
     left_area = np.count_nonzero(left_image)
     right_area = np.count_nonzero(right_image)
 
+    left_right_seperation = obj.coords[1] + pivot[1]
     left_objs = []
     right_objs = []
     """
+    # add for objects attached with strings (still pseudocode)
     for o in linked_objs:
         if o.link_pos.x < pivot_center:
             left_objs.append(obj)
@@ -72,7 +65,10 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
     left_area += sum([o.area for o in left_objs])
     right_area += sum([o.area for o in right_objs])
 
-    # print(left_area, right_area)
+    print("LR other objs", len(left_objs), len(right_objs))
+    print("shapes:", obj_dim, left_image.shape, right_image.shape)
+    print("TLR:", total_area, left_area, right_area)
+
     if left_area > right_area:
         return 1
     elif left_area < right_area:
@@ -82,29 +78,15 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
 
 
 def pivot_object(object, pivot, linked_objects=[], touching_objs=[]):
-    base_image = PIL.Image.fromarray(object.base_image)
-    # print(object.image)
     pivot_center = pivot
     cur_rotation = object.rotation
     new_rotation = cur_rotation + find_tilt_direction(object, pivot, linked_objects, touching_objs)
-    new_image = base_image.rotate(
-        new_rotation,
-        center=pivot_center,
-        expand=True
-    )
 
-    new_coords = []
-    new_center = []
-    new_arr = np.array(new_image)
-    new_arr[np.nonzero(new_arr)] = 1
+    # doesn't actually work
+    new_coords = point_after_rotation((0, 0), pivot, new_rotation)
+    new_pivot = point_after_rotation(pivot, pivot, new_rotation)
 
-    # crop after rotation with expansion
-    coords = np.argwhere(new_arr > 0)
-    x0, y0 = coords.min(axis=0)
-    x1, y1 = coords.max(axis=0)
-    cropped = new_arr[x0:x1+1, y0:y1+1]
-
-    return cropped, new_rotation
+    return new_coords, new_pivot, new_rotation
 
 
 if __name__ == "__main__":
