@@ -48,12 +48,11 @@ class SolidObject():
         im,vals,newCoords,newPivot = self.rotateImage(self.rotation,updateCoords=False)
         #vals = x[1]
         difference = [0,0]
-        print("newCoords", self.rotation, newCoords, oldCoords)
         if oldPivot and (newPivot != oldPivot):
-            print("OLD", oldPivot)
-            print("NEW", newPivot)
+            # print("OLD", oldPivot)
+            # print("NEW", newPivot)
             difference = np.asarray(oldPivot) - np.asarray(newPivot)
-            print("DIFFERENCE", difference)
+            # print("DIFFERENCE", difference)
         for i,val in enumerate(vals):
             val[0] = val[0] + self.coords[0] + difference[0]
             val[1] = val[1] + self.coords[1] + difference[1]
