@@ -66,12 +66,12 @@ def is_supported(obj,objects):
 	objs2.remove(obj)
 	for o in objs2:
 		support_test = is_touching(obj, o)
-		#if not o.pivot:
-		if True:
+		if not o.pivot:
 			if support_test[0] and ("above" in support_test[1]):
 				return True
 		#elif find_tilt_direction(obj, obj.pivot, linked_objs=o.attachedObjects, touching_objs=[o,]) == 0:
-		#	return True
+		else:
+			return True
 	return False
 # read in image png and convert to array map
 # def loadImage(fileName):

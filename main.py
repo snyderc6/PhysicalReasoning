@@ -34,10 +34,12 @@ def move(o, direction_to_move):
 	if 'left_of' in direction_to_move:
 		print('moving left')
 		objectMoved = True
+		o.rotation += 1
 		o.coords = [o.coords[0],o.coords[1]-1]
 	if 'right_of' in direction_to_move:	
 		print('moving right')
 		objectMoved = True
+		o.rotation -= 1
 		o.coords = [o.coords[0],o.coords[1]+1]
 	return objectMoved
 
@@ -55,14 +57,15 @@ def move_shapes(black,blue):
 			touching,direction = is_touching(o,o2)
 			if(touching & ("above" in direction)): 
 				direction.remove("above")
-				direction.append("down")
+				#direction.append("down")
 				touching_o.append([o2,direction])
 		for support in touching_o:
 			print(support)
-			if(is_supported_by(o, support[0])):
+			#if(is_supported_by(o, support[0])):
+			if 'underneath' in support[1]:
 				supported_underneath = True
+				direction_to_move.remove("down")
 			else:
-				print(support)
 				direction_to_move = support[1]
 		print("supported",supported_underneath)
 		print("dir", direction_to_move)
@@ -75,7 +78,9 @@ def move_shapes(black,blue):
 					move(rope, direction_to_move)
 				#move attached object(s)
 				for obj_attached in o.attachedObjects:
-					move(obj_attached, direction_to_move)
+					if not obj_attached.pivot:
+						move(obj_attached, direction_to_move)
+						#try pushing it
 
 		if o.pivot:
 			link_objs = o.attachedObjects
@@ -97,7 +102,7 @@ def move_shapes(black,blue):
 	# for obj in objectsMoved:
 	# 	if(len(obj.attachedObjects) > 0):
 	# 		#move object
-	return objectMoved
+	return
 
 def run_machine(black,blue,green,imSize):
 	someObjectsMoved = True
@@ -126,7 +131,7 @@ def make_video(image1, images):
 
 
 def main():
-	image = cv2.imread("problems/6-3-small.png")
+	image = cv2.imread("problems/small-test.png")
 	size = np.array(image).shape
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)
