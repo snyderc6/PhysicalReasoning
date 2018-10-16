@@ -131,7 +131,7 @@ def make_video(image1, images):
 
 
 def main():
-	image = cv2.imread("problems/small-test.png")
+	image = cv2.imread("problems/pivot_test.png")
 	size = np.array(image).shape
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)

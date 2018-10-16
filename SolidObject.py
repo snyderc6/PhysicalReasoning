@@ -34,17 +34,29 @@ class SolidObject():
         newCenter = tuple(np.floor(np.mean(pixels,axis=0)))
         centerDiff = self.center[0]-newCenter[0],self.center[1]-newCenter[1]
         newCoords =  self.center[0]-centerDiff[0],self.coords[1]-centerDiff[1]
+        newPivot = []
+        if self.pivot:
+            newPivot = self.pivot[0]-centerDiff[0],self.pivot[1]-centerDiff[1]
         if updateCoords:
             self.coords = newCoords
 
-        return newIm, pixels, newCoords
+        return newIm, pixels, newCoords, newPivot
 
     def getWorldPixelCoordList(self):
-        x = self.rotateImage(self.rotation,updateCoords=False)
-        vals = x[1]
+        oldPivot = self.pivot
+        oldCoords = self.coords
+        im,vals,newCoords,newPivot = self.rotateImage(self.rotation,updateCoords=False)
+        #vals = x[1]
+        difference = [0,0]
+        print("newCoords", self.rotation, newCoords, oldCoords)
+        if oldPivot and (newPivot != oldPivot):
+            print("OLD", oldPivot)
+            print("NEW", newPivot)
+            difference = np.asarray(oldPivot) - np.asarray(newPivot)
+            print("DIFFERENCE", difference)
         for i,val in enumerate(vals):
-            val[0]+=self.coords[0]
-            val[1]+=self.coords[1]
+            val[0] = val[0] + self.coords[0] + difference[0]
+            val[1] = val[1] + self.coords[1] + difference[1]
             vals[i] = val
         return vals
 
