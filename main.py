@@ -74,6 +74,9 @@ def move_shapes(black,blue):
 			# o.coords = new_coords
 			# o.pivot = new_pivot
 			o.rotation = new_rotation
+	for obj in objectsMoved:
+		if(len(obj.attachedObjects) > 0):
+			#move object
 	return objectMoved
 
 def run_machine(black,blue,imSize):
@@ -103,13 +106,14 @@ def make_video(image1, images):
 
 
 def main():
-	image = cv2.imread("problems/test.png")
+	image = cv2.imread("problems/6-1-no-mouse.png")
 	size = np.array(image).shape
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)
 	print(len(black),len(blue),len(green),len(yellow))
 	attach_yellows(blue,yellow)
 	attach_greens(blue,green)
+	attach_objects(blue,black,green)
     # blueO = blue[0]
     # blackO = black[0]
     # touchingVal, orientationVal = is_touching(blueO, blackO)
@@ -117,6 +121,7 @@ def main():
     #move_shapes(blue,black)
     # im = make_image(black, blue)
     # im.show()
+
 	movie = run_machine(black,blue,size)
 	for i,im in enumerate(movie):
 		im.save('out/im-'+str(i)+'.png')

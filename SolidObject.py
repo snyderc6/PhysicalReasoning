@@ -14,6 +14,7 @@ class SolidObject():
         self.ropeIds = []
         self.ropeAttachPoints = []
         self.pivot = pivot #make this coords of pivot
+        self.attachedObjects = []
         print('Created object shape=',self.image.shape,'center=',self.center,'coords=',self.coords,'area=',self.area)
 
     def rotateImage(self,angle,updateCoords=True):

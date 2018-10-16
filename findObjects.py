@@ -209,3 +209,17 @@ def attach_greens(blues,greens):
             closest.ropeIds += [green,]
             green.ropeIds += [closest,]
             print('attached rope to',closest,'at',closest.ropeAttachPoints)
+
+def attach_objects(blues,blacks,greens):
+    for o in blues + blacks:
+        obj_list = copy.copy(blues + blacks)
+        obj_list.remove(o)
+        o_ropes = o.ropeIds
+        print("ropes", o_ropes)
+        for o2 in obj_list:
+            o2_ropes = o2.ropeIds
+            for rope in o_ropes:
+                if rope in o2_ropes:
+                    o.attachedObjects = o2
+            
+            
