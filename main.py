@@ -65,8 +65,13 @@ def move_shapes(black,blue):
 			objectMoved = move(o, direction_to_move)
 			if objectMoved:
 				objectsMoved.append(o)
+				#move rope(s)
+				for rope in o.ropeIds:
+					move(rope, direction_to_move)
+				#move attached object(s)
 				for obj_attached in o.attachedObjects:
 					move(obj_attached, direction_to_move)
+
 		if o.pivot:
 			link_objs = o.attachedObjects
 			non_supported_link_objs = []
@@ -77,6 +82,8 @@ def move_shapes(black,blue):
 			if(objectPivoted):
 				objectsMoved.append(o)
 				#need to move linked objects
+
+				#need to move ropes
 
 			# not actually right yet
 			# o.coords = new_coords
