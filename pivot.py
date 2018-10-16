@@ -78,7 +78,7 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
     print("shapes:", obj_dim, left_image.shape, right_image.shape)
     print("TLR:", total_area, left_area, right_area)
 
-    buffer_val = 150
+    buffer_val = 4
     if left_area > right_area + buffer_val:
         return 1
     elif left_area + buffer_val < right_area:
