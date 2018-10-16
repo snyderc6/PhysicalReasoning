@@ -64,6 +64,13 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
         elif check[1] > left_right_seperation:
             right_objs.append(o)
 
+    for o in linked_objs:
+        check = o.coords+np.asarray(o.center)
+        if check[1] < left_right_seperation:
+            left_objs.append(o)
+        elif check[1] > left_right_seperation:
+            right_objs.append(o)
+
     left_area += sum([o.area for o in left_objs])
     right_area += sum([o.area for o in right_objs])
 

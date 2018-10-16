@@ -20,7 +20,7 @@ def make_image(black,blue,imageSize):
 	im = Image.fromarray(im.astype('uint8')*255)
 	return im
 
-def roll(o, direction_to_move):
+def move(o, direction_to_move):
 	objectMoved = False
 	if 'down' in direction_to_move:
 		print('moving down')
@@ -29,11 +29,11 @@ def roll(o, direction_to_move):
 	if 'left_of' in direction_to_move:
 		print('moving left')
 		objectMoved = True
-		o.coords = [o.coords[0]-1,o.coords[1]-1]
+		o.coords = [o.coords[0],o.coords[1]-1]
 	if 'right_of' in direction_to_move:	
 		print('moving right')
 		objectMoved = True
-		o.coords = [o.coords[0]-1,o.coords[1]+1]
+		o.coords = [o.coords[0],o.coords[1]+1]
 	return objectMoved
 
 def move_shapes(black,blue):
@@ -54,7 +54,7 @@ def move_shapes(black,blue):
 				touching_o.append([o2,direction])
 		for support in touching_o:
 			print(support)
-			if(is_supported(o, support[0])):
+			if(is_supported_by(o, support[0])):
 				supported_underneath = True
 			else:
 				print(support)
@@ -62,21 +62,29 @@ def move_shapes(black,blue):
 		print("supported",supported_underneath)
 		print("dir", direction_to_move)
 		if not supported_underneath and not o.pivot:
-			objectMoved = roll(o, direction_to_move)
+			objectMoved = move(o, direction_to_move)
 			if objectMoved:
 				objectsMoved.append(o)
+				for obj_attached in o.attachedObjects:
+					move(obj_attached, direction_to_move)
 		if o.pivot:
+			link_objs = o.attachedObjects
 			non_supported_link_objs = []
+			for obj in link_objs:
+				if not is_supported(obj, blue+black):
+					non_supported_link_objs.append(obj)
 			new_coords, new_pivot, new_rotation, objectPivoted = pivot_object(o, o.pivot, non_supported_link_objs, touching_o)
 			if(objectPivoted):
 				objectsMoved.append(o)
+				#need to move linked objects
+
 			# not actually right yet
 			# o.coords = new_coords
 			# o.pivot = new_pivot
 			o.rotation = new_rotation
-	for obj in objectsMoved:
-		if(len(obj.attachedObjects) > 0):
-			#move object
+	# for obj in objectsMoved:
+	# 	if(len(obj.attachedObjects) > 0):
+	# 		#move object
 	return objectMoved
 
 def run_machine(black,blue,imSize):
@@ -106,7 +114,7 @@ def make_video(image1, images):
 
 
 def main():
-	image = cv2.imread("problems/6-1-no-mouse.png")
+	image = cv2.imread("problems/rolling_test.png")
 	size = np.array(image).shape
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)

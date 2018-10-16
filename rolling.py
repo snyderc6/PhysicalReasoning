@@ -46,7 +46,7 @@ def is_touching(object1, object2):
 		return True,orientation
 	return False,orientation
 
-def is_supported(obj, supportObj):
+def is_supported_by(obj, supportObj):
 	support_obj_pixels = supportObj.getWorldPixelCoordList()
 	offset_pixels = obj.getWorldPixelCoordList()+[0,-1]
 	shared_pixels = np.array([x for x in set(tuple(x) for x in offset_pixels) & set(tuple(x) for x in support_obj_pixels)]) 
@@ -57,6 +57,17 @@ def is_supported(obj, supportObj):
 		return True
 	return False
 	
+def is_supported(obj,objects):
+	touching = []
+	for o in objects-obj:
+		support_test = is_touching(obj, o)
+		if not o.pivot:
+			if support_test[0] and ("above" in supprt_test[1]):
+				return True
+		elif find_tilt_direction(obj, obj.pivot, o.attachedObjects, support_test[0]) == 0:
+			return True
+		else:
+			return False
 # read in image png and convert to array map
 # def loadImage(fileName):
 # 	image = cv2.imread(fileName)
