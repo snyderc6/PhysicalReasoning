@@ -154,7 +154,7 @@ def make_video(image1, images):
 
 
 def main():
-	image = cv2.imread("problems/new-5-small.png")
+	image = cv2.imread("problems/new-C-small.png")
 	size = np.array(image).shape
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)
