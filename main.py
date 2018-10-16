@@ -50,7 +50,7 @@ def move_shapes(black,blue):
 		supported_underneath = False
 		direction_to_move = ["down"]
 		#blue.remove(o)#remove o from list
-		print(len(black+blue))
+		# print(len(black+blue))
 		obj_list = copy.copy(black+blue)
 		obj_list.remove(o)
 		for o2 in obj_list:
@@ -60,7 +60,7 @@ def move_shapes(black,blue):
 				#direction.append("down")
 				touching_o.append([o2,direction])
 		for support in touching_o:
-			print(support)
+			# print(support)
 			#if(is_supported_by(o, support[0])):
 			if 'underneath' in support[1]:
 				supported_underneath = True
@@ -68,8 +68,8 @@ def move_shapes(black,blue):
 					direction_to_move.remove("down")
 			else:
 				direction_to_move = support[1]
-		print("supported",supported_underneath)
-		print("dir", direction_to_move)
+		# print("supported",supported_underneath)
+		# print("dir", direction_to_move)
 		if not supported_underneath and not o.pivot:
 			objectMoved = move(o, direction_to_move)
 			if objectMoved:
@@ -81,11 +81,11 @@ def move_shapes(black,blue):
 				for obj_attached in o.attachedObjects:
 					if not obj_attached.pivot:
 						move(obj_attached, direction_to_move)
-					else:
-						if o.center[0] > obj_attached.center[0]:
-							obj_attached.rotation -= 1
-						else:
-							obj_attached.rotation += 1
+					# else:
+					# 	if o.center[0] > obj_attached.center[0]:
+					# 		obj_attached.rotation -= 1
+					# 	else:
+					# 		obj_attached.rotation += 1
 
 
 		if o.pivot:
@@ -94,12 +94,29 @@ def move_shapes(black,blue):
 			for obj in link_objs:
 				if not is_supported(obj, blue+black):
 					non_supported_link_objs.append(obj)
-			new_coords, new_pivot, new_rotation, objectPivoted = pivot_object(o, o.pivot, non_supported_link_objs, touching_o)
+			new_coords, new_pivot, new_rotation, objectPivoted, tiltDirection = pivot_object(o, o.pivot, non_supported_link_objs, touching_o)
 			if(objectPivoted):
 				objectsMoved.append(o)
-				#need to move linked objects
-
-				#need to move ropes
+				for rope in o.ropeIds:
+					if(left_side(rope,o) and (tiltDirection == "down")):
+							print("rope move down")
+							ropeMoved = "down"
+							move(rope, ["down"])
+					elif(right_side(rope,o) and (tiltDirection == "up")):
+							print("rope move up")
+							ropeMoved = "up"
+							move(rope, ["up"])
+					else:
+						print("ERROR")
+				# for obj in o.attachedObjects:
+				# 	if(left_side(obj,o) and (tiltDirection == "down")):
+				# 			print("obj move down")
+				# 			#move(obj, ["down"])
+				# 	elif(right_side(obj,o) and (tiltDirection == "up")):
+				# 			print("obj move up")
+				# 			#move(obj, ["up"])
+				# 	else:
+				# 		print("ERROR")
 
 			# not actually right yet
 			# o.coords = new_coords
@@ -137,7 +154,7 @@ def make_video(image1, images):
 
 
 def main():
-	image = cv2.imread("problems/6-1-small.png")
+	image = cv2.imread("problems/6-1-no-mouse.png")
 	size = np.array(image).shape
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)

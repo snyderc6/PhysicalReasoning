@@ -78,7 +78,7 @@ def find_tilt_direction(obj, pivot, linked_objs=[], touching_objs=[]):
     print("shapes:", obj_dim, left_image.shape, right_image.shape)
     print("TLR:", total_area, left_area, right_area)
 
-    buffer_val = 4
+    buffer_val = 150
     if left_area > right_area + buffer_val:
         return 1
     elif left_area + buffer_val < right_area:
@@ -91,16 +91,33 @@ def pivot_object(object, pivot, linked_objects=[], touching_objs=[]):
     pivot_center = pivot
     cur_rotation = object.rotation
     new_rotation = cur_rotation + find_tilt_direction(object, pivot, linked_objects, touching_objs)
+    tiltDirection = "none"
+    #print("newRot v oldRot", new_rotation, cur_rotation)
     if(new_rotation != cur_rotation):
-        objectMoved = False
-    else:
         objectMoved = True
+        if(new_rotation > cur_rotation):
+            tiltDirection = "up"
+        else:
+            tiltDirection = "down"
+    else:
+        objectMoved = False
     # doesn't actually work
     new_coords = point_after_rotation((0, 0), pivot, new_rotation)
     new_pivot = point_after_rotation(pivot, pivot, new_rotation)
 
-    return new_coords, new_pivot, new_rotation, objectMoved
+    return new_coords, new_pivot, new_rotation, objectMoved, tiltDirection
 
+def left_side(obj1,obj2):
+    if(obj1.coords[1] < obj2.coords[1]):
+        return True
+    else:
+        return False
+
+def right_side(obj1,obj2):
+    if(obj1.coords[1] > obj2.coords[1]):
+        return True
+    else:
+        return False
 
 if __name__ == "__main__":
     pass
