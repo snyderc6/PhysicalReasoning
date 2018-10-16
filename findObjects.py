@@ -88,28 +88,28 @@ import math
 
 def blackMask(image):
     lower = np.array([0, 0, 0])
-    upper = np.array([15, 15, 15])
+    upper = np.array([180, 30, 30])
     shapeMask = cv2.inRange(image, lower, upper)
     return shapeMask
 
 def blueMask(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    lower = np.array([110,50,50])
-    upper = np.array([130,255,255])
+    lower = np.array([100,100,100])
+    upper = np.array([140,255,255])
     shapeMask = cv2.inRange(hsv, lower, upper)
     return shapeMask
 
 def yellowMask(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    lower = np.array([20,50,50])
+    lower = np.array([20,100,100])
     upper = np.array([40,255,255])
     shapeMask = cv2.inRange(hsv, lower, upper)
     return shapeMask
 
 def greenMask(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    lower = np.array([40,50,50])
-    upper = np.array([80,255,255])
+    lower = np.array([45,100,100])
+    upper = np.array([75,255,255])
     shapeMask = cv2.inRange(hsv, lower, upper)
     return shapeMask
 
