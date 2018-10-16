@@ -220,6 +220,7 @@ def attach_objects(blues,blacks,greens):
             o2_ropes = o2.ropeIds
             for rope in o_ropes:
                 if rope in o2_ropes:
-                    o.attachedObjects = o2
+                    print('attached rope')
+                    o.attachedObjects += [o2,]
             
             

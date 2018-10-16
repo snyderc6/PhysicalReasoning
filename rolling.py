@@ -8,6 +8,9 @@ import numpy as np
 from PIL import Image
 import pandas as pd 
 import cv2
+import copy
+from pivot import find_tilt_direction
+
 
 def is_offset(o1_pixels, o2_pixels, offset_val):
 	offset_pixels = o1_pixels + offset_val
@@ -59,15 +62,17 @@ def is_supported_by(obj, supportObj):
 	
 def is_supported(obj,objects):
 	touching = []
-	for o in objects-obj:
+	objs2 = copy.copy(objects)
+	objs2.remove(obj)
+	for o in objs2:
 		support_test = is_touching(obj, o)
-		if not o.pivot:
-			if support_test[0] and ("above" in supprt_test[1]):
+		#if not o.pivot:
+		if True:
+			if support_test[0] and ("above" in support_test[1]):
 				return True
-		elif find_tilt_direction(obj, obj.pivot, o.attachedObjects, support_test[0]) == 0:
-			return True
-		else:
-			return False
+		#elif find_tilt_direction(obj, obj.pivot, linked_objs=o.attachedObjects, touching_objs=[o,]) == 0:
+		#	return True
+	return False
 # read in image png and convert to array map
 # def loadImage(fileName):
 # 	image = cv2.imread(fileName)

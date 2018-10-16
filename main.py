@@ -5,7 +5,7 @@ from pivot import *
 from PIL import Image
 import copy
 
-def make_image(black,blue,imageSize):
+def make_image(black,blue,green,imageSize):
 	im = np.ones(imageSize)
 	for o in black:
 		pixels = o.getWorldPixelCoordList()
@@ -16,7 +16,12 @@ def make_image(black,blue,imageSize):
 		pixels = o.getWorldPixelCoordList()
 		for pixel in pixels:
 			if -1 < pixel[0] < imageSize[0] and -1 < pixel[1] < imageSize[1]:
-				im[pixel[0]][pixel[1]] = [0,0,1]
+				im[pixel[0]][pixel[1]] = [1,0,0]
+	for o in green:
+		pixels = o.getWorldPixelCoordList()
+		for pixel in pixels:
+			if -1 < pixel[0] < imageSize[0] and -1 < pixel[1] < imageSize[1]:
+				im[pixel[0]][pixel[1]] = [0,1,0]
 	im = Image.fromarray(im.astype('uint8')*255)
 	return im
 
@@ -94,9 +99,9 @@ def move_shapes(black,blue):
 	# 		#move object
 	return objectMoved
 
-def run_machine(black,blue,imSize):
+def run_machine(black,blue,green,imSize):
 	someObjectsMoved = True
-	movieImages = [make_image(black,blue,imSize),]
+	movieImages = [make_image(black,blue,green,imSize),]
 	i=0
 	#while someObjectsMoved:
 	while i < 20:
@@ -105,7 +110,7 @@ def run_machine(black,blue,imSize):
 		#black[0].rotation += 1
 		#check if anything changed since last frame
 		someObjectsMoved = move_shapes(black,blue)
-		movieImages += [make_image(black,blue,imSize),]
+		movieImages += [make_image(black,blue,green,imSize),]
 	return movieImages
 
 def make_video(image1, images):
@@ -121,7 +126,7 @@ def make_video(image1, images):
 
 
 def main():
-	image = cv2.imread("problems/rolling_test.png")
+	image = cv2.imread("problems/6-3-small.png")
 	size = np.array(image).shape
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)
@@ -137,7 +142,7 @@ def main():
     # im = make_image(black, blue)
     # im.show()
 
-	movie = run_machine(black,blue,size)
+	movie = run_machine(black,blue,green,size)
 	for i,im in enumerate(movie):
 		im.save('out/im-'+str(i)+'.png')
 	make_video(image,movie)
