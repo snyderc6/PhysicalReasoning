@@ -64,7 +64,8 @@ def move_shapes(black,blue):
 			#if(is_supported_by(o, support[0])):
 			if 'underneath' in support[1]:
 				supported_underneath = True
-				direction_to_move.remove("down")
+				if "down" in direction_to_move:
+					direction_to_move.remove("down")
 			else:
 				direction_to_move = support[1]
 		print("supported",supported_underneath)
@@ -80,7 +81,12 @@ def move_shapes(black,blue):
 				for obj_attached in o.attachedObjects:
 					if not obj_attached.pivot:
 						move(obj_attached, direction_to_move)
-						#try pushing it
+					else:
+						if o.center[0] > obj_attached.center[0]:
+							obj_attached.rotation -= 1
+						else:
+							obj_attached.rotation += 1
+
 
 		if o.pivot:
 			link_objs = o.attachedObjects
@@ -131,7 +137,7 @@ def make_video(image1, images):
 
 
 def main():
-	image = cv2.imread("problems/6-1-no-mouse.png")
+	image = cv2.imread("problems/6-1-small.png")
 	size = np.array(image).shape
 	black,blue, green, yellow = segment_objects(image)
 	#print(blue)
